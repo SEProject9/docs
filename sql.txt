@@ -1,131 +1,129 @@
 ﻿/*创建db*/
-create database sys_edu
+create database sys_edu;
 
-go
 /*使用db*/
-use sys_edu
+use sys_edu;
 
-go
 /*1.管理员表：admin_list（id 账号 密码 姓名 性别 年龄 职位ID ）*/
 create table admin_list(
-	admin_id int primary key,
-	admin_account varchar(45) not null,
-	admin_password varchar(45) not null,
-	admin_name varchar(45) not null,
-	admin_sex varchar(2) not null,
-	admin_age int not null,
-	/*职位ID*/
-)engine=innodb default charset=utf8
+	admin_id int auto_increment primary key,
+	admin_account varchar(45),
+	admin_password varchar(45),
+	admin_name varchar(45),
+)engine=innodb default charset=utf8;
 
-go
 /*2.管理员日志表:diary_list（管理员id 操作类型 操作时间 操作对象（被操作的id）*/
 create table diary_list(
-	dia_id int primary key,
-	admin_id int not null,
-	dia_type varchar(45) not null,
-	dia_time varchar(32) not null,
-	dia_object varchar(32) not null,
+	dia_id int auto_increment primary key,
+	admin_id int,
+	dia_type varchar(45),
+	dia_time varchar(32),
+	dia_object varchar(32),
 	dia_text varchar(60),
 	foreign key(admin_id) references admin_list(admin_id)
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
-go
+
 /*3.行业信息表：industry_list(id:行业id)*/
 create table industry_list(
-	ind_id int primary key,
+	ind_id int auto_increment primary key,
 	ind_name varchar(45) not null,
 	ind_text varchar(45) not null
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
-go
+
 /*4.企业用户账户表：enterprise_list（id 企业用户id ）*/
 create table enterprise_list(
-	ent_id int primary key,
+	ent_id int auto_increment primary key,
 	ent_account varchar(32) not null,
 	ent_password varchar(20) not null,
-	admin_id int not null,
+	admin_id int,
 	state int default 0 comment '0未审核 1通过审核 2审核未通过'  not null,
 	foreign key(admin_id) references admin_list(admin_id)
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
-go
+
 /*5.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!企业用户详细信息表:enterprise_info_list*/
 create table enterprise_info_list(
-	ent_id int primary key,
+	ent_id int auto_increment primary key,
 	ind_id int not null,
-	ent_name varchar(32) not null,
-	ent_num varchar(45) not null,
-	ent_add varchar(45) not null,
-	ent_phone varchar(45) not null,
-	ent_text varchar(45) not null,
+	ent_name varchar(32),
+	ent_num varchar(45),
+	ent_add varchar(45),
+	ent_phone varchar(45),
+	ent_text varchar(45),
 	foreign key(ent_id) references enterprise_list(ent_id),
 	foreign key(ind_id) references industry_list(ind_id)
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
-go
+
 /*6.技术服务信息需求表:tech_ser_req_list*/
 create table tech_ser_req_list(
-	req_id int primary key,
+	req_id int auto_increment primary key,
 	ind_id int,
-	ent_id int not null,
+	ent_id int,
 	req_date varchar(32),
-	req_title varchar(45) not null,
-	req_text varchar(45) not null,
-	state int default 1 comment '1为发布0撤销' not null
-)engine=innodb default charset=utf8
+	req_title varchar(45),
+	req_text varchar(45),
+	state int default 1 comment '1为发布0撤销',
+	foreign key(ent_id) references enterprise_list(ent_id),
+	foreign key(ind_id) references industry_list(ind_id)
+)engine=innodb default charset=utf8;
 
-go
+
 /*7.技术服务信息供应表:tech_ser_sup_list*/
 create table tech_ser_sup_list(
-	sup_id int primary key,
+	sup_id int auto_increment primary key,
 	ind_id int,
-	ent_id varchar(32) not null,
+	ent_id int,
 	sup_date varchar(32),
-	sup_title varchar(32) not null,
-	sup_text varchar(45) not null,
-	state int default 1 comment '1为发布0撤销'  not null
-)engine=innodb default charset=utf8
+	sup_title varchar(32),
+	sup_text varchar(45),
+	state int default 1 comment '1为发布 0撤销',
+	foreign key(ent_id) references enterprise_list(ent_id),
+	foreign key(ind_id) references industry_list(ind_id)
+)engine=innodb default charset=utf8;
 
-go
+
 /*8.industry_data_list(id:行业id)*/
 create table industry_data_list(
-	ind_data_id int primary key,
-	ind_id int not null, 
+	ind_data_id int auto_increment primary key,
+	ind_id int not null,
 	ind_date varchar(45) not null,
 	url varchar(45) not null,
 	title varchar(45),
 	source varchar(45),
 	author varchar(32),
 	text varchar(45),
-	picture	pic,
-	foreign key(ind_id) references industry_list(ind_id)
-)engine=innodb default charset=utf8
+	picture varchar(45),
+  foreign key(ind_id) references industry_list(ind_id)
+)engine=innodb default charset=utf8;
 
-go
+
 /*9.行业资讯表：industry_info_list(id:行业id)*/
 create table industry_info_list(
-	ind_info_id int primary key,
-	ind_id int not null, 
+	ind_info_id int auto_increment primary key,
+	ind_id int not null,
 	ind_date varchar(45) not null,
 	url varchar(45) not null,
-	title varchar(45),
+	title varchar(45) not null,
 	source varchar(45),
 	author varchar(32),
 	text varchar(45),
-	picture	pic,
+	picture varchar(45),
 	foreign key(ind_id) references industry_list(ind_id)
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
-go
+
 /*10.技术服务供应合作配对表:tech_ser_match_list(供应商id 供应商名称 电话号码)*/
 create table tech_ser_match_list(
-	match_id int primary key,
+	match_id int auto_increment primary key,
 	req_id int not null,
 	sup_id int not null, 
 	match_time varchar(45),
 	foreign key(req_id) references tech_ser_req_list(req_id),
 	foreign key(sup_id) references tech_ser_sup_list(sup_id)
-)engine=innodb default charset=utf8
+)engine=innodb default charset=utf8;
 
 
 
