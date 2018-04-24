@@ -45,7 +45,8 @@ create table enterprise_list(
 
 /*5.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!企业用户详细信息表:enterprise_info_list*/
 create table enterprise_info_list(
-	ent_id int primary key,
+	ent_info_id int auto_increment primary key,
+	ent_id int unique,
 	ind_id int not null,
 	ent_name varchar(32),
 	ent_num varchar(45),
