@@ -24,7 +24,7 @@ create table diary_list(
 )engine=innodb default charset=utf8;
 
 
-/*3.行业信息表：industry_list(id:行业id)*/
+/*3.行业表：industry_list(id:行业id)*/
 create table industry_list(
 	ind_id int auto_increment primary key,
 	ind_name varchar(45) not null,
